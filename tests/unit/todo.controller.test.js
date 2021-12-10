@@ -23,22 +23,21 @@ describe("TodoController.getTodoById", () => {
     req.params.todoId = "61b2f470eb58bdb34e99e0f8";
     await TodoController.getTodoById(req, res, next);
     expect(TodoModel.findById).toBeCalledWith("61b2f470eb58bdb34e99e0f8");
-  }); 
-  if("should return json body and response code 200",async () => {
-    TodoModel.findById.mockReturnValue(newTodo)
-    await TodoModel.findById(req, res, next);
+  });
+  it("should return json body and response code 200", async () => {
+    TodoModel.findById.mockReturnValue(newTodo);
+    await TodoController.getTodoById(req, res, next);
     expect(res.statusCode).toBe(200);
-    expect(res._idEndCalled()).toBeTruthy()
+    expect(res._isEndCalled()).toBeTruthy();
     expect(res._getJSONData()).toStrictEqual(newTodo);
   });
-  it('should do error handling', async () => {
-    const errorMessage = { message: 'error finding todoModel'}
-    const rejectedPromise = Promise.reject(errorMessage)
-    TodoModel.findById.mockReturnValue(rejectedPromise)
-    await TodoController.getTodoById(req, res, next)
-    expect(next).toHaveBeenCalledWith(errorMessage)
-  })
-  
+  it("should do error handling", async () => {
+    const errorMessage = { message: "error finding todoModel" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.findById.mockReturnValue(rejectedPromise);
+    await TodoController.getTodoById(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
 });
 
 describe("TodoController.getTodos", () => {

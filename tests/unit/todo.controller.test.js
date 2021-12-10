@@ -37,7 +37,6 @@ describe("TodoController.getTodoById", () => {
     TodoModel.findById.mockReturnValue(rejectedPromise);
     await TodoController.getTodoById(req, res, next);
     expect(next).toHaveBeenCalledWith(errorMessage);
-    //
   });
 });
 

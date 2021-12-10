@@ -5,6 +5,8 @@ const newTodo = require("../mock-data/new-todo.json");
 const endpointUrl = "/todos/";
 
 let firstTodo, newTodoId;
+const nonExistingTodoId = "61b2f17442a3d41c8a87c333";
+const testData = { title: "Make integration test for PUT", done: true };
 
 describe(endpointUrl, () => {
   test("GET " + endpointUrl, async () => {
@@ -25,9 +27,7 @@ describe(endpointUrl, () => {
   });
 
   test("GET todo by Id donsn't exist " + endpointUrl + ":todoId", async () => {
-    const response = await request(app).get(
-      endpointUrl + "61b2f17442a3d41c8a87c333"
-    );
+    const response = await request(app).get(endpointUrl + nonExistingTodoId);
     expect(response.statusCode).toBe(404);
   });
 
@@ -52,13 +52,32 @@ describe(endpointUrl, () => {
     }
   );
 
-  it("POST " + endpointUrl, async () => {
-    const testData = { title: "Make integration test for PUT", done: true };
+  it("PUT " + endpointUrl, async () => {
     const res = await request(app)
       .put(endpointUrl + newTodoId)
       .send(testData);
     expect(res.statusCode).toBe(200);
     expect(res.body.title).toBe(testData.title);
     expect(res.body.done).toBe(testData.done);
+  });
+  it("should return 404 on PUT " + endpointUrl, async () => {
+    const res = await request(app)
+      .put(endpointUrl + nonExistingTodoId)
+      .send(testData);
+    expect(res.statusCode).toBe(404);
+  });
+
+  test("HTTP DELETE ", async () => {
+    const res = await request(app).delete(endpointUrl + newTodoId);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.title).toBe(testData.title);
+    expect(res.body.done).toBe(testData.done);
+  });
+
+  it("should return 404 on DELETE " + endpointUrl, async () => {
+    const res = await request(app)
+      .delete(endpointUrl + nonExistingTodoId)
+      .send(testData);
+    expect(res.statusCode).toBe(404);
   });
 });
